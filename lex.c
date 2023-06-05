@@ -5,7 +5,7 @@ FILE *in;
 
 
 enum ewords{
-	IF=1,DO,OD,VAR,WHILE,ELSE,THEN,CONST,COMMBOX,BEGIN,END,DELAY,INT,BOOL,CMM,SC,OB,CB,CL,EQ,NL,ID,EF
+	IF=1,DO,OD,VAR,WHILE,ELSE,THEN,CONST,COMMBOX,BEGIN,END,DELAY,INT,BOOL,TRUE,FALSE,CMM,SC,OB,CB,CL,EQ,NL,ID,NUM,EF
 	};
 typedef struct tkn
 {
@@ -14,8 +14,8 @@ typedef struct tkn
 	int val;
 }tkn;
 
-char * words[] = { "if","do","od","var","while","else","then","const","commbox","begin","end","delay","integer","boolean",",",";","(",")",":","=","\n"};
-const int  word_c = 21;
+char * words[] = { "if","do","od","var","while","else","then","const","commbox","begin","end","delay","integer","boolean","true","false",",",";","(",")",":","=","\n"};
+const int  word_c = 23;
 
 
 
@@ -93,7 +93,7 @@ tkn next()
 	int i=1;
 	while( (c=getc(in))==' ' || c=='\t' || c=='\n');
 	temp.name[0] = c;
-	if( isAlpha(c)==1 )
+	if( isAlpha(c)==1 || isNum(c)  )
 	{
 			while( (c=getc(in)) != ' '  && c!='\n' && c!='\t' && (isAlpha(c)==1||isNum(c)==1))
 			{
@@ -105,9 +105,14 @@ tkn next()
 	}
 	//if( i==1 ) ungetc(c,in);
 	temp.name[i] = '\0';
-	if(temp.name[0] != EOF )
+	if(temp.name[0] != EOF && isNum(temp.name[0]) != 1)
 	{
 		temp.type = match(temp.name);
+	}
+	else if( temp.name[0] != EOF && isNum(temp.name[0]) == 1 )
+	{
+		temp.type = NUM;
+		temp.val = atoi(temp.name);
 	}
 	else temp.type = EF;
 	return temp;
@@ -116,7 +121,7 @@ tkn next()
 
 void ptkn(tkn i)
 {
-	printf("--%s--%d--\n",i.name,i.type);
+	printf("--%s--%d--%d\n",i.name,i.type,i.val);
 }
 
 
@@ -134,7 +139,9 @@ int inAsign()
 {
 	int flg=0;
 	tkn t;
-	if( ((t=next()).type == BOOL || t.type==INT) && next().type == CL && next().type == ID)
+	tkn b;
+	tkn c;
+	if( ((t=next()).type == BOOL || t.type==INT) && next().type == CL && next().type == ID && ( (b=next()).type == CMM || (b.type == EQ && ((((c=next()).type==TRUE||c.type==FALSE)&& t.type==BOOL) || (c.type==NUM && t.type==INT )))))
 	{
 		flg = 1;
 	}
@@ -221,9 +228,9 @@ int main(int argc,char *args[])
 	{	
 		in = fopen(args[1],"r");
 	}
-	validHead();
+	//validHead();
 	//printf("%d %d %d",CL,NL,ID);
-
+	//printf("%d\n",inAsign());
 }
 
 
