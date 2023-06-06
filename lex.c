@@ -179,6 +179,40 @@ int inAsign()
 	return flg;
 }
 
+int vcheck()
+{
+	tkn t;
+	tkn n;
+	int flg = 0;
+	if( ((t=next()).type == BOOL||t.type==INT)&& next().type==CL && next().type ==ID )
+	{
+		if( (n=next()).type==CMM )
+		{
+			flg=vcheck();
+		}
+		else if( n.type == EQ &&( ((next().type == NUM && t.type ==INT ) || (t.type == BOOL&& ( glob_next.type == TRUE || glob_next.type == FALSE))) ))
+		{
+			if( next().type == SC )
+			{	
+				flg = 1;
+			}
+			else if( glob_next.type == CMM)
+			{
+				flg = vcheck();
+			}
+		}
+		else if( n.type == SC )
+		{
+			flg = 1;
+		}
+	}
+	return flg;
+}
+
+
+
+
+
 int validComm()
 {
 	int flag=0;
@@ -194,7 +228,7 @@ int validComm()
 
 
 
-
+//old assignment checker;
 int rass()
 {
 	int flg=0;
@@ -212,7 +246,7 @@ int rass()
 	}
 	return flg;
 }
-
+//old assginment helpchecker;
 int vAsign()
 {
 	int flg = 0;
@@ -222,7 +256,7 @@ int vAsign()
 	}
 	return flg;
 }
-
+//pritns a token
 void pptkn()
 {
 	tkn t;
@@ -239,7 +273,7 @@ void validHead()
 	tkn t = next();
 	if(t.type==COMMBOX && validComm()==1)
 	{
-		if( next().type == VAR && vAsign()==1 )
+		if( next().type == VAR && vcheck()==1 )
 		{
 			flag=1;
 		}
@@ -259,10 +293,10 @@ int main(int argc,char *args[])
 	{	
 		in = fopen(args[1],"r");
 	}
-	//validHead();
+	validHead();
 	//printf("%d %d %d",CL,NL,ID);
-	printf("%d\n",inAsign());
-	pptkn();
+	//printf("%d\n",vcheck());
+
 }
 
 
