@@ -1,4 +1,3 @@
-//simple syntax validator
 
 #include<stdio.h>
 #include<stdlib.h>
