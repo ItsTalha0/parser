@@ -7,6 +7,7 @@ FILE *in;
 enum ewords{
 	IF=1,DO,OD,VAR,WHILE,ELSE,THEN,CONST,COMMBOX,BEGIN,END,DELAY,INT,BOOL,TRUE,FALSE,CMM,SC,OB,CB,CL,EQ,NL,ID,NUM,EF
 	};
+
 typedef struct tkn
 {
 	char name[100];
@@ -14,10 +15,19 @@ typedef struct tkn
 	int val;
 }tkn;
 
+
+tkn glob_next;
+
+
 char * words[] = { "if","do","od","var","while","else","then","const","commbox","begin","end","delay","integer","boolean","true","false",",",";","(",")",":","=","\n"};
+
 const int  word_c = 23;
 
-
+void throwError()
+{
+	printf("Invalid Number\n");
+	exit(1);
+}
 
 int isAlpha(char c)
 {
@@ -41,7 +51,19 @@ int isNum(char c)
 }
 
 	
-
+int isValidNum(char *c)
+{
+	int flg=0;
+	while( *(c) != '\0' && flg==0 )
+	{
+		if( isNum(*c) != 1 )
+		{
+			flg = 1;
+		}
+		c++;
+	}
+	return flg;
+}
 
 //to be used only in conjunction with isNum function
 int val(char c)
@@ -112,9 +134,17 @@ tkn next()
 	else if( temp.name[0] != EOF && isNum(temp.name[0]) == 1 )
 	{
 		temp.type = NUM;
-		temp.val = atoi(temp.name);
+		if( isValidNum(temp.name) == 0 )
+		{
+			temp.val = atoi(temp.name);
+		}
+		else
+		{
+			throwError();
+		}
 	}
 	else temp.type = EF;
+	glob_next = temp;
 	return temp;
 }
 
@@ -224,13 +254,14 @@ void validHead()
 
 int main(int argc,char *args[])
 {
-	if( argc > 0 )
+	if( argc > 1 )
 	{	
 		in = fopen(args[1],"r");
 	}
 	//validHead();
 	//printf("%d %d %d",CL,NL,ID);
-	//printf("%d\n",inAsign());
+	printf("%d\n",inAsign());
+	pptkn();
 }
 
 
