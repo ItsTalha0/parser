@@ -6,7 +6,7 @@ FILE *in;
 
 
 enum ewords{
-	IF=1,DO,OD,VAR,WHILE,ELSE,THEN,CONST,COMMBOX,BEGIN,END,DELAY,INT,BOOL,TRUE,FALSE,CMM,SC,OB,CB,CL,EQ,NL,ID,NUM,EF
+	IF=1,DO,OD,VAR,WHILE,ELSE,THEN,CONST,COMMBOX,BEGIN,END,DELAY,INT,BOOL,TRUE,FALSE,ADR,CMM,SC,OB,CB,CL,EQ,NL,ID,NUM,EF
 	};
 
 typedef struct tkn
@@ -20,9 +20,9 @@ typedef struct tkn
 tkn glob_next;
 
 
-char * words[] = { "if","do","od","var","while","else","then","const","commbox","begin","end","delay","integer","boolean","true","false",",",";","(",")",":","=","\n"};
+char * words[] = { "if","do","od","var","while","else","then","const","box","begin","end","del","int","bool","true","false","adr",",",";","(",")",":","=","\n"};
 
-const int  word_c = 23;
+const int  word_c = 24;
 
 void throwError()
 {
